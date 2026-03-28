@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/SideBar/sidebar";
+import { Header } from "@/components/Header/header";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'})
 
@@ -18,12 +21,21 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="pt-BR"
       suppressHydrationWarning
       className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
     >
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
+      <body className="block min-h-screen bg-background">
+        <ThemeProvider>
+          <SidebarProvider className="">
+            <AppSidebar />
+            <div className="w-full block">
+              <Header />
+          
+          {children}
+            </div>
+          </SidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

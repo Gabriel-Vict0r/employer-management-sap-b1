@@ -26,7 +26,8 @@ colaboratorCode: z.coerce.number().positive(),
     remark: z.string().min(2).max(255).nonempty(),
   });
 export const FormCollaborator = () => {
-  const form = useForm<z.infer<typeof schema>>({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const form = useForm<z.input<typeof schema>, any, z.output<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
       firstName: '',
@@ -45,6 +46,7 @@ export const FormCollaborator = () => {
     }
   });
 
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    function onSubmit(data: any) {
     console.log(data)
   }

@@ -64,14 +64,14 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
-              <SidebarMenuItem>
+              {/**<SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <a href="#">
                     <Settings />
                     <span>Settings</span>
                   </a>
                 </SidebarMenuButton>
-              </SidebarMenuItem>
+              </SidebarMenuItem> */}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

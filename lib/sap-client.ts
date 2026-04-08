@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getSession } from "./sap-session"
 import { loginSAP } from "./sap-auth"
 import { get } from "node:http"
@@ -19,9 +20,9 @@ const agent = new https.Agent({
   ca: fs.readFileSync(certPath),
 })
 
-export async function sapRequest(endpoint: string) {
+export async function sapRequest(endpoint: string): Promise<any> {
   let cookie = await getValidCookie()
-  console.log("Agente HTTPS configurado com certificado:", certPath)
+  //console.log("Agente HTTPS configurado com certificado:", certPath)
   let response = await fetch(`${process.env.SAP_URL}/b1s/v2/${endpoint}`, {
     headers: {
       "Content-Type": "application/json",

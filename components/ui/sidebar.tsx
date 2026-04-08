@@ -498,34 +498,55 @@ const sidebarMenuButtonVariants = cva(
 
 function SidebarMenuButton({
   render,
+  asChild = false,
   isActive = false,
   variant = "default",
   size = "default",
   tooltip,
   className,
+  children,
   ...props
 }: useRender.ComponentProps<"button"> &
   React.ComponentProps<"button"> & {
+    asChild?: boolean
     isActive?: boolean
     tooltip?: string | React.ComponentProps<typeof TooltipContent>
   } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const { isMobile, state } = useSidebar()
-  const comp = useRender({
-    defaultTagName: "button",
-    props: mergeProps<"button">(
-      {
-        className: cn(sidebarMenuButtonVariants({ variant, size }), className),
-      },
-      props
-    ),
-    render: !tooltip ? render : <TooltipTrigger render={render} />,
-    state: {
-      slot: "sidebar-menu-button",
-      sidebar: "menu-button",
-      size,
-      active: isActive,
+  const buttonProps = mergeProps<"button">(
+    {
+      className: cn(sidebarMenuButtonVariants({ variant, size }), className),
     },
-  })
+    props
+  )
+
+  const asChildElement = asChild && React.isValidElement(children)
+  const childElement = asChildElement
+    ? (children as React.ReactElement)
+    : undefined
+
+  const renderButton = () => {
+    if (asChildElement && childElement) {
+      return React.cloneElement(
+        childElement,
+        mergeProps<any>(buttonProps as any, childElement.props as any)
+      )
+    }
+
+    return useRender({
+      defaultTagName: "button",
+      props: buttonProps,
+      render: !tooltip ? render : <TooltipTrigger render={render} />,
+      state: {
+        slot: "sidebar-menu-button",
+        sidebar: "menu-button",
+        size,
+        active: isActive,
+      },
+    })
+  }
+
+  const comp = renderButton()
 
   if (!tooltip) {
     return comp

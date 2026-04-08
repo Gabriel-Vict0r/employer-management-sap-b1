@@ -1,20 +1,21 @@
 import React from "react"
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-const STORAGE_KEY = "departments_cache"
+const STORAGE_KEY = "employees_cache"
 
-let departmentsCache: { Code: number; Name: string }[] | null = null
-export function useDepartments() {
-  const [departments, setDepartments] = React.useState<
+let employeesCache: { Code: number; Name: string }[] | null = null
+
+export function useEmployees() {
+  const [employees, setemployees] = React.useState<
     { Code: number; Name: string }[]
   >([])
   const [loading, setLoading] = React.useState(true)
 
   React.useEffect(() => {
-    async function fetchDepartments() {
+    async function fetchemployees() {
       try {
-        if (departmentsCache) {
-          setDepartments(departmentsCache)
+        if (employeesCache) {
+          setemployees(employeesCache)
           setLoading(false)
           return
         }
@@ -22,25 +23,24 @@ export function useDepartments() {
         const stored = localStorage.getItem(STORAGE_KEY)
         if (stored) {
           const parsed = JSON.parse(stored)
-          departmentsCache = parsed
-          setDepartments(parsed)
+          employeesCache = parsed
+          setemployees(parsed)
           setLoading(false)
           return
         }
 
-        const res = await fetch("/api/sap/departments")
+        const res = await fetch("/api/sap/employees")
         const data = await res.json()
 
-        const formatted = data.map((dep: any) => ({
-          Code: dep.Code,
-          Name: dep.Name,
+        const formatted = data.map((emp: any) => ({
+          Code: emp.EmployeeID,
+          Name: `${emp.FirstName} ${emp.LastName}`,
         }))
-
         // 🔥 salva nos dois
-        departmentsCache = formatted
+        employeesCache = formatted
         localStorage.setItem(STORAGE_KEY, JSON.stringify(formatted))
 
-        setDepartments(formatted)
+        setemployees(formatted)
       } catch (error) {
         console.error(error)
       } finally {
@@ -48,8 +48,7 @@ export function useDepartments() {
       }
     }
 
-    fetchDepartments()
+    fetchemployees()
   }, [])
-
-  return { departments, loading }
+  return { employees, loading }
 }

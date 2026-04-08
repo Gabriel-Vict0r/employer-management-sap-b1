@@ -9,6 +9,18 @@ import { Button } from '../ui/button';
 import { Separator } from '../ui/separator';
 import { SeparatorForm } from '../SeparatorForm/separator-form';
 import { useDepartments } from '@/hooks/use-departments';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Department } from '@/interfaces/departments';
+import { MultiSelect } from '../MultiSelect/multi-select';
+import { useBranches } from '@/hooks/use-branche';
+import { useEmployees } from '@/hooks/use-employee';
 
 const schema = z.object({
     firstName: z.string().min(2).max(50),
@@ -33,8 +45,8 @@ export const FormCollaborator = () => {
       firstName: '',
       middleName: '',
       lastName: '',
-      colaboratorCode: 0,
-      seniorID: 0,
+      colaboratorCode: '',
+      seniorID: '',
       jobTitle: '',
       department: 0,
       branches: [],
@@ -51,21 +63,28 @@ export const FormCollaborator = () => {
     console.log(data)
   }
 
-  //const departments = useDepartments();
-  //console.log(departments);
+  const returnDepartments = useDepartments();
+ const departments = returnDepartments.departments;
+ 
+ const returnBranches = useBranches();
+ const branches = returnBranches.branches;
+ 
+ const returnManagers = useEmployees();
+ const managers = returnManagers.employees;
+ console.log(branches);
   return (
     <Card>
 
       {/*Cabeçalho*/}
       <CardHeader className='p-4'>
-        <CardTitle className='text-'>Cadastro Manual de Colaborador</CardTitle>
+        <CardTitle className='text-xl'>Cadastro Manual de Colaborador</CardTitle>
         <CardDescription>Preencha os dados do colaborador</CardDescription>
       </CardHeader>
 
       {/* Conteúdo/Campos */}
       <CardContent>
 
-    <form onSubmit={form.handleSubmit(onSubmit)}>
+    <form onSubmit={form.handleSubmit(onSubmit)} id="collaborator-form">
       <SeparatorForm  text="Informações Pessoais"/>
       <div className='flex gap-4 py-4'>
       <Field>
@@ -115,20 +134,74 @@ export const FormCollaborator = () => {
           )}
         </Field>
       </div>
-      {/*<Controller 
-      name='firstName'
-      control={form.control}
-      render={({field, fieldState}) => (
-        <Field data-invalid={fieldState.invalid}>
-          <FieldLabel>First Name</FieldLabel>
-          <Input {...field}/>
+        
+        <div className='flex flex-row row-auto gap-4 py-4'>
+          <Controller 
+        name='department'
+        control={form.control}
+        render={({field, fieldState}) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel>Departamento</FieldLabel>
+            <Select
+              {...field}
+              onValueChange={field.onChange}
+            >
+              
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione um departamento">
+                  {departments.find((dept) => dept.Code.toString() === field.value)?.Name || "Selecione um departamento"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                {departments.map((dept) => (
+                  <SelectItem key={dept.Code} value={dept.Code.toString()}>
+                    {dept.Name}
+                  </SelectItem>
+                ))}
+                  </SelectGroup>
+              </SelectContent>
+            </Select>
 
-          {fieldState.invalid && (
-            <FieldError errors={[fieldState.error]}/>
+            {fieldState.invalid && (
+              <FieldError errors={[fieldState.error]}/>
+            )}
+          </Field>
+        )}
+        />
+
+         <Controller
+          name="branches"
+          control={form.control}
+          render={({ field }) => (
+            <MultiSelect
+              field={field}
+              options={branches.map((f) => ({
+                label: f.Name,
+                value: f.Code.toString(),
+              }))}
+              placeholder="Selecione as filiais"
+            />
           )}
-        </Field>
-      )}
-      />*/}
+        />
+        
+        
+        <Controller
+          name="manager"
+          control={form.control}
+          render={({ field }) => (
+            <MultiSelect
+              field={field}
+              options={managers.map((f) => ({
+                label: f.Name,
+                value: f.Code.toString(),
+              }))}
+              placeholder="Selecione o gerente"
+            />
+          )}
+        />
+        </div>
+
       </form>
       </CardContent>
 
@@ -139,7 +212,7 @@ export const FormCollaborator = () => {
           <Button type="button" variant="outline" onClick={() => form.reset()} className='cursor-pointer'>
             Limpar
           </Button>
-          <Button type="submit" form="form-rhf-demo" className='cursor-pointer hover:bg-chart-2' onClick={() => form.handleSubmit(onSubmit)()}>
+          <Button type="submit" form="collaborator-form" className='cursor-pointer hover:bg-chart-2'>
             Salvar Colaborador
           </Button>
         </Field>

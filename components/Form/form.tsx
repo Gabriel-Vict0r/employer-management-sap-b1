@@ -135,7 +135,7 @@ export const FormCollaborator = () => {
         </Field>
       </div>
         
-        <div className='flex flex-row row-auto gap-4 py-4'>
+        <div className='flex flex-row row-auto gap-4 py-8'>
           <Controller 
         name='department'
         control={form.control}

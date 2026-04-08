@@ -10,6 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
+import { Label } from '../ui/label'
 
 type Option = {
   label: string
@@ -45,7 +46,10 @@ export function MultiSelect({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
+      <div className='flex flex-col w-full gap-2'>
+        <Label className="mb-1">Branches</Label>
       <PopoverTrigger className="flex w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-[40px] h-auto">
+        
         <div className="flex flex-wrap gap-1">
           {selectedValues.length > 0 ? (
             selectedValues.map((value) => {
@@ -89,6 +93,7 @@ export function MultiSelect({
           </CommandGroup>
         </Command>
       </PopoverContent>
+      </div>
     </Popover>
   )
 }

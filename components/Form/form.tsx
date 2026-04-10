@@ -3,7 +3,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod'
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
-import { Field, FieldError, FieldLabel } from '@/components/ui/field';
+import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Button } from '../ui/button';
 import { Separator } from '../ui/separator';
@@ -21,6 +21,8 @@ import { Department } from '@/interfaces/departments';
 import { MultiSelect } from '../MultiSelect/multi-select';
 import { useBranches } from '@/hooks/use-branche';
 import { useEmployees } from '@/hooks/use-employee';
+import { useCC } from '@/hooks/use-coast-center';
+import { Save, X } from 'lucide-react';
 
 const schema = z.object({
     firstName: z.string().min(2).max(50),
@@ -71,7 +73,16 @@ export const FormCollaborator = () => {
  
  const returnManagers = useEmployees();
  const managers = returnManagers.employees;
- console.log(branches);
+
+ const returnCC = useCC(); 
+ const CC = returnCC.CC;
+
+ const sexOptions = [
+  { label: 'Masculino', value: 'M' },
+  { label: 'Feminino', value: 'F' },
+  { label: 'Outro', value: 'E' },
+];
+ console.log(CC);
   return (
     <Card>
 
@@ -128,7 +139,7 @@ export const FormCollaborator = () => {
         </Field>
         <Field>
           <FieldLabel>Cargo</FieldLabel>
-          <Input {...form.register('jobTitle')} placeholder='Digite o cargo'/>
+          <Input {...form.register('jobTitle')} placeholder='Digite o cargo reduzido'/>
           {form.formState.errors.jobTitle && (
             <FieldError errors={[form.formState.errors.jobTitle]}/>
           )}
@@ -136,38 +147,21 @@ export const FormCollaborator = () => {
       </div>
         
         <div className='flex flex-row row-auto gap-4 py-8'>
-          <Controller 
-        name='department'
-        control={form.control}
-        render={({field, fieldState}) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel>Departamento</FieldLabel>
-            <Select
-              {...field}
-              onValueChange={field.onChange}
-            >
-              
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione um departamento">
-                  {departments.find((dept) => dept.Code.toString() === field.value)?.Name || "Selecione um departamento"}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                {departments.map((dept) => (
-                  <SelectItem key={dept.Code} value={dept.Code.toString()}>
-                    {dept.Name}
-                  </SelectItem>
-                ))}
-                  </SelectGroup>
-              </SelectContent>
-            </Select>
-
-            {fieldState.invalid && (
-              <FieldError errors={[fieldState.error]}/>
-            )}
-          </Field>
-        )}
+        
+        <Controller
+          name="department"
+          control={form.control}
+          render={({ field }) => (
+            <MultiSelect
+              field={field}
+              label='Departamento'
+              options={departments.map((f) => ({
+                label: f.Name,
+                value: f.Code.toString(),
+              }))}
+              placeholder="Selecione o departamento"
+            />
+          )}
         />
 
          <Controller
@@ -176,6 +170,7 @@ export const FormCollaborator = () => {
           render={({ field }) => (
             <MultiSelect
               field={field}
+              label='Filiais'
               options={branches.map((f) => ({
                 label: f.Name,
                 value: f.Code.toString(),
@@ -192,6 +187,7 @@ export const FormCollaborator = () => {
           render={({ field }) => (
             <MultiSelect
               field={field}
+              label='Gerente'
               options={managers.map((f) => ({
                 label: f.Name,
                 value: f.Code.toString(),
@@ -201,19 +197,84 @@ export const FormCollaborator = () => {
           )}
         />
         </div>
+          <SeparatorForm  text="Informações Adicionais"/>
+          <div className='flex flex-row row-auto gap-4'>
+            <Controller
+        name="sexEx"
+        control={form.control}
+        render={({ field }) => (
+          <Field className="w-full">
+            <FieldLabel>Sexo</FieldLabel>
 
+            <Select
+              value={field.value}
+              onValueChange={field.onChange}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione">
+                 {sexOptions.find(option => option.value === field.value)?.label || 'Selecione'}
+                </SelectValue>
+              </SelectTrigger>
+
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="M">Masculino</SelectItem>
+                  <SelectItem value="F">Feminino</SelectItem>
+                  <SelectItem value="E">Outro</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </Field>
+        )}
+      />
+
+          <Controller
+          name="costCenter"
+          control={form.control}
+          render={({ field }) => (
+            <MultiSelect
+              field={field}
+              label='Centro de Custos'
+              options={CC.map((f) => ({
+                label: f.Name,
+                value: f.Code.toString(),
+              }))}
+              placeholder="Selecione o centro de custos"
+            />
+          )}
+        />
+          </div>
+
+          <div className='flex flex-row row-auto gap-4 py-4 w-full'>
+          <Field>
+            <FieldLabel>Código de Usuário</FieldLabel>
+            <Input {...form.register('firstName')} placeholder='Digite o código de usuário'/>
+            {form.formState.errors.firstName && (
+              <FieldError errors={[form.formState.errors.firstName]}/>
+            )}
+          </Field>
+      <Field>
+        <FieldLabel>Observações (cargo coompleto)</FieldLabel>
+        <Input {...form.register('firstName')} placeholder='Digite o cargo completo'/>
+        {form.formState.errors.firstName && (
+          <FieldError errors={[form.formState.errors.firstName]}/>
+        )}
+      </Field>
+      </div>
       </form>
       </CardContent>
 
 
       {/* Rodapé/Submit */}
       <CardFooter>
-<Field orientation="horizontal" className='justify-end gap-2'>
-          <Button type="button" variant="outline" onClick={() => form.reset()} className='cursor-pointer'>
-            Limpar
+<Field orientation="horizontal" className='justify-end gap-2 p-2'>
+          <Button type="button" variant="outline" onClick={() => form.reset()} className='cursor-pointer p-5'>
+            <X />
+            <span>Limpar</span>
           </Button>
-          <Button type="submit" form="collaborator-form" className='cursor-pointer hover:bg-chart-2'>
-            Salvar Colaborador
+          <Button type="submit" form="collaborator-form" className='cursor-pointer p-5'>
+            <Save />
+            <span>Salvar Colaborador</span>
           </Button>
         </Field>
       </CardFooter>

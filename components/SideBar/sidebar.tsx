@@ -14,21 +14,33 @@ import {
 import { Home, Settings, Star, History, User, UserRoundPlus, UserRoundSearch} from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { Separator } from "../ui/separator"
 
 export function AppSidebar() {
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="">
       {/* HEADER */}
       <SidebarHeader className="p-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton>
-              <Image src='./SAP_logo.svg' width={50} height={40} alt="Logo do SAP"/>
-              <h3 className="font-semibold text-base">Business One</h3>
+            <SidebarMenuButton asChild size="lg">
+              <div>
+                <Image
+                  src="/SAP_logo.svg"
+                  width={50}
+                  height={40}
+                  alt="Logo do SAP"
+                />
+                <span className="font-semibold text-base">Business One</span>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+        
       </SidebarHeader>
+
+
+    <Separator className="" />
 
       {/* CONTENT */}
       <SidebarContent>

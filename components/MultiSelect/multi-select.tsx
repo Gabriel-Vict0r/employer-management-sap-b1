@@ -21,12 +21,14 @@ type MultiSelectProps = {
   field: ControllerRenderProps<any, any>
   options: Option[]
   placeholder?: string
+  label: string
 }
 
 export function MultiSelect({
   field,
   options,
   placeholder = 'Selecione...',
+  label
 }: MultiSelectProps) {
   const [open, setOpen] = useState(false)
 
@@ -47,7 +49,7 @@ export function MultiSelect({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <div className='flex flex-col w-full gap-2'>
-        <Label className="mb-1">Branches</Label>
+        <Label className="mb-1">{label}</Label>
       <PopoverTrigger className="flex w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-[40px] h-auto">
         
         <div className="flex flex-wrap gap-1">

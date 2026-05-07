@@ -22,8 +22,8 @@ COPY --from=builder /app/certs ./certs
 
 USER nextjs
 
-EXPOSE 3000
-ENV PORT=3000
+EXPOSE 8081
+ENV PORT=8081
 ENV HOSTNAME=0.0.0.0
 
 CMD ["node", "server.js"]

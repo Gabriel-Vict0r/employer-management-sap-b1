@@ -10,5 +10,5 @@ services:
       SAP_USERNAME: "${SAP_USERNAME}"
       SAP_PASSWORD: "${SAP_PASSWORD}"
     ports:
-      - "8081:3000"
+      - "8081:8081"
     restart: unless-stopped

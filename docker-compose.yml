@@ -1,0 +1,14 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+      SAP_URL: "${SAP_URL}"
+      SAP_COMPANYDB: "${SAP_COMPANYDB}"
+      SAP_USERNAME: "${SAP_USERNAME}"
+      SAP_PASSWORD: "${SAP_PASSWORD}"
+    ports:
+      - "8081:3000"
+    restart: unless-stopped

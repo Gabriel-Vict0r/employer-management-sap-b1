@@ -4,11 +4,15 @@ import fs from "fs"
 import https from "https"
 import fetch from "node-fetch"
 
-const certPath = path.resolve(process.cwd(), "certs/SAP-servico.crt")
+let agent: https.Agent | null = null
 
-const agent = new https.Agent({
-  ca: fs.readFileSync(certPath),
-})
+function getAgent(): https.Agent {
+  if (!agent) {
+    const certPath = path.resolve(process.cwd(), "certs/SAP-Servico.crt")
+    agent = new https.Agent({ ca: fs.readFileSync(certPath) })
+  }
+  return agent
+}
 
 export async function loginSAP() {
   const response = await fetch(`${process.env.SAP_URL}/b1s/v2/Login`, {
@@ -21,7 +25,7 @@ export async function loginSAP() {
       Password: process.env.SAP_PASSWORD,
       UserName: process.env.SAP_USERNAME,
     }),
-    agent: agent,
+    agent: getAgent(),
   })
 
   if (!response.ok) {

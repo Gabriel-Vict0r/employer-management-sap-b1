@@ -1,0 +1,21 @@
+{
+  "sqltools.useNodeRuntime": true,
+  "sqltools.connections": [
+    {
+      "connectionTimeout": 30,
+      "hanaOptions": {
+        "encrypt": true,
+        "sslValidateCertificate": false,
+        "sslCryptoProvider": "openssl"
+      },
+      "previewLimit": 50,
+      "driver": "SAPHana",
+      "name": "SAP HANA PRD",
+      "server": "SAP-HANA01",
+      "port": 30015,
+      "database": "SBOGRUPOSERIOS",
+      "username": "SYSTEM",
+      "password": "o#y4BYw5SRW@k5x"
+    }
+  ]
+}

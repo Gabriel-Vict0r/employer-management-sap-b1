@@ -18,16 +18,16 @@ export function useBranches() {
     async function fetchBranches() {
       console.log("branchesCache:", branchesCache)
       try {
-        // ✅ 1. tenta memória
+        // 1. tenta memória
         if (branchesCache) {
           setBranches(branchesCache)
           setLoading(false)
           return
         }
 
-        // ✅ 2. tenta localStorage
+        // 2. tenta localStorage
         const stored = localStorage.getItem(STORAGE_KEY)
-        console.log("stored:", stored)
+        //console.log("stored:", stored)
         if (stored) {
           const parsed = JSON.parse(stored)
 
@@ -46,7 +46,7 @@ export function useBranches() {
           Name: branch.BPLName,
         }))
 
-        // 🔥 salva nos dois
+        // salva nos dois
         branchesCache = formatted
         localStorage.setItem(STORAGE_KEY, JSON.stringify(formatted))
 

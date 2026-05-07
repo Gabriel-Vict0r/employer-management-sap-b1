@@ -14,11 +14,15 @@ async function getValidCookie() {
   return await loginSAP()
 }
 
-const certPath = path.resolve(process.cwd(), "certs/SAP-servico.crt")
+let agent: https.Agent | null = null
 
-const agent = new https.Agent({
-  ca: fs.readFileSync(certPath),
-})
+function getAgent(): https.Agent {
+  if (!agent) {
+    const certPath = path.resolve(process.cwd(), "certs/SAP-Servico.crt")
+    agent = new https.Agent({ ca: fs.readFileSync(certPath) })
+  }
+  return agent
+}
 
 type SapRequestOptions = {
   method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE"
@@ -45,7 +49,7 @@ async function executeRequest(
       ...headers,
     },
     ...(hasBody ? { body: JSON.stringify(body) } : {}),
-    agent,
+    agent: getAgent(),
   })
 }
 
